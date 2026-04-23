@@ -1,26 +1,66 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-montserrat);
+  --font-body: var(--font-exo-2);
+  --font-editorial: var(--font-playfair);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #070E08;
+  color: #D8E8D8;
+  font-family: var(--font-exo-2), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* Propagate font-family to all built-in Montserrat references in inline styles */
+[style*="Montserrat"] { font-family: var(--font-montserrat), Montserrat, system-ui, sans-serif !important; }
+[style*="Playfair"]   { font-family: var(--font-playfair), "Playfair Display", Georgia, serif !important; }
+[style*="Exo 2"]      { font-family: var(--font-exo-2), "Exo 2", system-ui, sans-serif !important; }
+
+.tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #3E5E42;
+  font-family: var(--font-montserrat), Montserrat, sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: color 0.18s, border-color 0.18s;
+  white-space: nowrap;
+}
+.tab.active { color: #F5D060; border-bottom-color: #F5D060; }
+.tab:hover:not(.active) { color: #8AB88E; }
+
+.twk-btn {
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--font-montserrat), Montserrat, sans-serif;
+  font-size: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.15s;
+}
+.twk-on  { background: #1A3A1E; border: 1px solid #3A6A3E; color: #A0C8A0; }
+.twk-off { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #4A6A4E; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #1E3E22; border-radius: 2px; }
+
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { background: #070E08 !important; overflow: visible !important; }
+  .no-print { display: none !important; }
+  main { overflow: visible !important; }
 }
