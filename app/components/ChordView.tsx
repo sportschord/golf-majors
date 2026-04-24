@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import * as d3 from 'd3';
 import { PLAYER_STATS, playerName, type PlayerStats, type MajorKey } from '@/lib/data';
 import { MM, MK } from '@/lib/majors';
+import { useIsMobile } from '@/app/hooks/useIsMobile';
 
 function getEligible(): PlayerStats[] {
   return Object.values(PLAYER_STATS)
@@ -18,6 +19,7 @@ interface ChordViewProps {
 
 export function ChordView({ selectedPlayer, onSelect }: ChordViewProps) {
   const [hovered, setHovered] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
   const players = useMemo(() => getEligible(), []);
 
@@ -83,56 +85,65 @@ export function ChordView({ selectedPlayer, onSelect }: ChordViewProps) {
     return { lx, ly, textRot, flip };
   };
 
-  return (
-    <div style={{ flex: 1, display: 'flex', overflow: 'hidden', position: 'relative' }}>
-
-      <div style={{
-        position: 'absolute', top: '20px', left: '20px', width: '200px', zIndex: 10,
-        background: 'rgba(11,26,12,0.92)', border: '1px solid rgba(255,255,255,0.08)',
-        borderRadius: '12px', padding: '14px 16px',
-        backdropFilter: 'blur(8px)',
-      }}>
-        <svg width="168" height="72" viewBox="0 0 168 72" style={{ display: 'block', marginBottom: '10px' }}>
-          {[0, 1, 2, 3].map(i => {
-            const x = 20 + i * 36, w = 28;
-            const col = MM[MK[i]].bright;
-            return (
-              <g key={i}>
-                <rect x={x} y={4} width={w} height={10} rx={3} fill={col} fillOpacity="0.85" />
-                <path d={`M ${x + w / 2} 14 C ${x + w / 2} 38 84 38 84 58`}
-                  fill="none" stroke={col} strokeOpacity="0.4" strokeWidth="4" />
-              </g>
-            );
-          })}
-          <rect x={64} y={58} width={40} height={10} rx={3} fill="rgba(255,255,255,0.25)" />
-          <text x="84" y="67" textAnchor="middle" dominantBaseline="middle"
-            fill="rgba(255,255,255,0.5)" fontSize="5.5" fontFamily="Montserrat,sans-serif">PLAYER</text>
-        </svg>
-
-        <div style={{ fontSize: '9px', fontFamily: 'Montserrat,sans-serif', fontWeight: 700, letterSpacing: '1.5px', color: '#6A8A6E', marginBottom: '8px' }}>HOW TO READ</div>
-        <div style={{ fontSize: '9px', fontFamily: 'Exo 2,sans-serif', color: '#4A6A4E', lineHeight: 1.6 }}>
-          <span style={{ color: '#8AAA8E' }}>Top arcs</span> — the 4 majors, sized by total wins in this set.<br />
-          <span style={{ color: '#8AAA8E' }}>Bottom arcs</span> — champions with 5+ majors.<br />
-          <span style={{ color: '#8AAA8E' }}>Ribbons</span> — connect each champion to the majors they won. Width = wins.<br />
-          Click a name to highlight.
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '10px' }}>
-          {MK.map(k => (
-            <div key={k} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: MM[k].bright, flexShrink: 0 }} />
-              <span style={{ fontSize: '7.5px', fontFamily: 'Montserrat,sans-serif', color: '#5A7A5E' }}>{MM[k].name}</span>
-            </div>
-          ))}
-        </div>
+  const legendPanel = (
+    <div style={isMobile ? {
+      display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center',
+      padding: '6px 12px', borderTop: '1px solid rgba(255,255,255,0.06)',
+    } : {
+      position: 'absolute', top: '20px', left: '20px', width: '200px', zIndex: 10,
+      background: 'rgba(11,26,12,0.92)', border: '1px solid rgba(255,255,255,0.08)',
+      borderRadius: '12px', padding: '14px 16px', backdropFilter: 'blur(8px)',
+    }}>
+      {!isMobile && (
+        <>
+          <svg width="168" height="72" viewBox="0 0 168 72" style={{ display: 'block', marginBottom: '10px' }}>
+            {[0, 1, 2, 3].map(i => {
+              const x = 20 + i * 36, w = 28;
+              const col = MM[MK[i]].bright;
+              return (
+                <g key={i}>
+                  <rect x={x} y={4} width={w} height={10} rx={3} fill={col} fillOpacity="0.85" />
+                  <path d={`M ${x + w / 2} 14 C ${x + w / 2} 38 84 38 84 58`}
+                    fill="none" stroke={col} strokeOpacity="0.4" strokeWidth="4" />
+                </g>
+              );
+            })}
+            <rect x={64} y={58} width={40} height={10} rx={3} fill="rgba(255,255,255,0.25)" />
+            <text x="84" y="67" textAnchor="middle" dominantBaseline="middle"
+              fill="rgba(255,255,255,0.5)" fontSize="5.5" fontFamily="Montserrat,sans-serif">PLAYER</text>
+          </svg>
+          <div style={{ fontSize: '9px', fontFamily: 'Montserrat,sans-serif', fontWeight: 700, letterSpacing: '1.5px', color: '#6A8A6E', marginBottom: '8px' }}>HOW TO READ</div>
+          <div style={{ fontSize: '9px', fontFamily: 'Exo 2,sans-serif', color: '#4A6A4E', lineHeight: 1.6 }}>
+            <span style={{ color: '#8AAA8E' }}>Top arcs</span> — the 4 majors, sized by total wins in this set.<br />
+            <span style={{ color: '#8AAA8E' }}>Bottom arcs</span> — champions with 5+ majors.<br />
+            <span style={{ color: '#8AAA8E' }}>Ribbons</span> — connect each champion to the majors they won. Width = wins.<br />
+            Click a name to highlight.
+          </div>
+        </>
+      )}
+      <div style={{ display: 'flex', flexDirection: isMobile ? 'row' : 'column', flexWrap: 'wrap', gap: isMobile ? '8px' : '4px', marginTop: isMobile ? 0 : '10px' }}>
+        {MK.map(k => (
+          <div key={k} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <div style={{ width: '7px', height: '7px', borderRadius: '2px', background: MM[k].bright, flexShrink: 0 }} />
+            <span style={{ fontSize: '7.5px', fontFamily: 'Montserrat,sans-serif', color: '#5A7A5E', whiteSpace: 'nowrap' }}>{MM[k].short}</span>
+          </div>
+        ))}
       </div>
+    </div>
+  );
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+  return (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative' }}>
+
+      {!isMobile && legendPanel}
+
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '10px', overflow: 'hidden' }}>
         <div style={{ fontSize: '7.5px', fontFamily: 'Montserrat,sans-serif', letterSpacing: '2.5px', color: '#3A5A3E' }}>
           CHAMPIONS WITH 5+ MAJORS · WINS BY TOURNAMENT
         </div>
 
-        <svg width={size} height={size} style={{ overflow: 'visible' }}>
+        <div style={{ width: isMobile ? 'min(90vw, 480px)' : `${size}px`, aspectRatio: '1', flexShrink: 0 }}>
+        <svg viewBox={`0 0 ${size} ${size}`} style={{ width: '100%', height: '100%', overflow: 'visible' }}>
           <g transform={`translate(${cx},${cy}) rotate(${ROTATE_DEG})`}>
             {chords.map((chord, i) => {
               const si = chord.source.index, ti = chord.target.index;
@@ -236,10 +247,14 @@ export function ChordView({ selectedPlayer, onSelect }: ChordViewProps) {
           </g>
         </svg>
 
+        </div>
+
         <div style={{ fontSize: '7.5px', fontFamily: 'Montserrat,sans-serif', color: '#2A4A2E', letterSpacing: '1.5px' }}>
           CLICK A NAME TO HIGHLIGHT WINS
         </div>
       </div>
+
+      {isMobile && legendPanel}
     </div>
   );
 }

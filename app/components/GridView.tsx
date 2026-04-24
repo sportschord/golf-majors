@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { PLAYERS, FLAG, PLAYER_STATS, WINNERS, playerName, type MajorKey } from '@/lib/data';
 import { MM, MK } from '@/lib/majors';
+import { useIsMobile } from '@/app/hooks/useIsMobile';
 
 const GY_MIN = 1856, GY_MAX = 2028, GY_SPAN = GY_MAX - GY_MIN;
 
@@ -27,6 +28,7 @@ interface GridViewProps {
 
 export function GridView({ selectedPlayer, onSelect }: GridViewProps) {
   const [hov, setHov] = useState<{ major: MajorKey; year: number } | null>(null);
+  const isMobile = useIsMobile();
 
   const winsData = useMemo(() => {
     const out = { masters: [], pga: [], usopen: [], open: [] } as Record<MajorKey, GridWin[]>;
@@ -128,7 +130,14 @@ export function GridView({ selectedPlayer, onSelect }: GridViewProps) {
         const ps = PLAYER_STATS[hovWin.pkey];
         const flag = FLAG[p.country] || '';
         return (
-          <div style={{
+          <div style={isMobile ? {
+            position: 'absolute', bottom: '8px', left: '10px', right: '10px',
+            background: '#0B1A0C', border: `1px solid ${m.color}45`,
+            borderRadius: '10px', padding: '10px 14px',
+            boxShadow: `0 8px 32px rgba(0,0,0,0.65)`,
+            zIndex: 10, pointerEvents: 'none',
+            display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap',
+          } : {
             position: 'absolute', bottom: '24px', right: '28px',
             background: '#0B1A0C', border: `1px solid ${m.color}45`,
             borderRadius: '12px', padding: '16px 18px',

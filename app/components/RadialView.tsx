@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { PLAYER_STATS, PLAYERS, TOP_PLAYERS, FLAG, WINNERS, playerName, type MajorKey, type Win } from '@/lib/data';
 import { MM, MK, FOUNDED, RADII, DECADE_TICKS, toAngle, polar, arcPathD } from '@/lib/majors';
+import { useIsMobile } from '@/app/hooks/useIsMobile';
 
 interface WinsByMajor { masters: Win[]; pga: Win[]; usopen: Win[]; open: Win[]; }
 
@@ -332,6 +333,8 @@ interface RadialViewProps {
 }
 
 export function RadialView({ selectedPlayer, hoveredWin, onHover, onSelect, showTable }: RadialViewProps) {
+  const isMobile = useIsMobile();
+
   const wins = useMemo<WinsByMajor>(() => {
     const out = { masters: [], pga: [], usopen: [], open: [] } as WinsByMajor;
     (Object.keys(out) as MajorKey[]).forEach(k => {
@@ -343,22 +346,25 @@ export function RadialView({ selectedPlayer, hoveredWin, onHover, onSelect, show
   }, []);
 
   return (
-    <div style={{ flex: 1, display: 'flex', overflow: 'hidden', gap: 0 }}>
-      <div style={{ flex: 1, position: 'relative', minWidth: 0 }}>
+    <div style={{ flex: 1, display: 'flex', flexDirection: isMobile ? 'column' : 'row', overflow: 'hidden', gap: 0 }}>
+      <div style={{ flex: 1, position: 'relative', minWidth: 0, minHeight: 0 }}>
         <ConcentricRings wins={wins} selectedPlayer={selectedPlayer} hoveredWin={hoveredWin} onHover={onHover} onSelect={onSelect} />
         <div style={{
-          position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)',
-          display: 'flex', gap: '18px', alignItems: 'center',
+          position: 'absolute', bottom: isMobile ? '8px' : '20px', left: '50%', transform: 'translateX(-50%)',
+          display: 'flex', gap: isMobile ? '10px' : '18px', alignItems: 'center',
         }}>
           {MK.map(k => (
-            <div key={k} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-              <div style={{ width: '22px', height: '2px', background: MM[k].bright, opacity: 0.6, borderRadius: '1px' }} />
-              <span style={{ fontSize: '7.5px', fontFamily: 'Montserrat,sans-serif', color: '#4A6A4E', letterSpacing: '0.5px' }}>{MM[k].short}</span>
+            <div key={k} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <div style={{ width: isMobile ? '14px' : '22px', height: '2px', background: MM[k].bright, opacity: 0.6, borderRadius: '1px' }} />
+              <span style={{ fontSize: '7px', fontFamily: 'Montserrat,sans-serif', color: '#4A6A4E', letterSpacing: '0.5px' }}>{MM[k].short}</span>
             </div>
           ))}
         </div>
       </div>
-      <div style={{ width: '250px', flexShrink: 0, padding: '16px 16px 16px 0' }}>
+      <div style={isMobile
+        ? { height: '210px', flexShrink: 0, padding: '0 10px 10px' }
+        : { width: '250px', flexShrink: 0, padding: '16px 16px 16px 0' }
+      }>
         <CenterPanel hoveredWin={hoveredWin} selectedPlayer={selectedPlayer} onSelect={onSelect} showTable={showTable} />
       </div>
     </div>

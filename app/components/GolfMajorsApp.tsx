@@ -9,6 +9,7 @@ import { MM, MK } from '@/lib/majors';
 import { RadialView } from './RadialView';
 import { ChordView } from './ChordView';
 import { GridView } from './GridView';
+import { useIsMobile } from '@/app/hooks/useIsMobile';
 
 const tabLinkStyle: CSSProperties = {
   textDecoration: 'none',
@@ -30,6 +31,7 @@ export function GolfMajorsApp() {
   const [hoveredWin, setHoveredWin] = useState<Win | null>(null);
   const [tweaks, setTweaks] = useState<Tweaks>(DEFAULT_TWEAKS);
   const [dismissedTweaksQuery, setDismissedTweaksQuery] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
   const sp = useSearchParams();
   const querySignature = sp.toString();
@@ -61,39 +63,59 @@ export function GolfMajorsApp() {
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: bg, color: fg, transition: 'background 0.3s' }}>
 
       <header className="no-print" style={{
-        borderBottom: `1px solid ${border}`, padding: '0 28px',
-        display: 'flex', alignItems: 'center', gap: '20px',
-        flexShrink: 0, height: '58px', background: hdr,
+        borderBottom: `1px solid ${border}`,
+        padding: isMobile ? '8px 12px 0' : '0 28px',
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
+        alignItems: isMobile ? 'stretch' : 'center',
+        gap: isMobile ? '0' : '20px',
+        flexShrink: 0,
+        height: isMobile ? 'auto' : '58px',
+        background: hdr,
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
-          <Image src="/sportschord-mark.svg" width={22} height={22} alt="Sportschord" style={{ opacity: 0.65, height: 22, width: 'auto' }} unoptimized />
-          <div style={{ width: '1px', height: '24px', background: border }} />
-          <div>
-            <div style={{ fontSize: '7.5px', fontFamily: 'Montserrat,sans-serif', fontWeight: 700, letterSpacing: '3px', color: '#3A6A3E', lineHeight: 1.3 }}>
-              SPORTSCHORD · GOLF
-            </div>
-            <div style={{ fontSize: '14px', fontFamily: 'Montserrat,sans-serif', fontWeight: 900, letterSpacing: '2.5px', color: fg, textTransform: 'uppercase', lineHeight: 1.3 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 1, minWidth: isMobile ? 0 : '220px', paddingBottom: isMobile ? '8px' : 0 }}>
+          <Image src="/sportschord-mark.svg" width={20} height={20} alt="Sportschord" style={{ opacity: 0.65, height: 20, width: 'auto', flexShrink: 0 }} unoptimized />
+          <div style={{ width: '1px', height: '20px', background: border, flexShrink: 0 }} />
+          <div style={{ minWidth: 0 }}>
+            {!isMobile && (
+              <div style={{ fontSize: '7.5px', fontFamily: 'Montserrat,sans-serif', fontWeight: 700, letterSpacing: '3px', color: '#3A6A3E', lineHeight: 1.3 }}>
+                SPORTSCHORD · GOLF
+              </div>
+            )}
+            <div style={{ fontSize: isMobile ? '11px' : '14px', fontFamily: 'Montserrat,sans-serif', fontWeight: 900, letterSpacing: isMobile ? '1.5px' : '2.5px', color: fg, textTransform: 'uppercase', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               A Visual History of Golf Majors
             </div>
           </div>
         </div>
 
-        <nav style={{ display: 'flex', marginLeft: 'auto', alignItems: 'center' }}>
+        <nav style={{
+          display: 'flex',
+          marginLeft: isMobile ? 0 : 'auto',
+          alignItems: 'center',
+          overflowX: 'auto',
+          WebkitOverflowScrolling: 'touch' as React.CSSProperties['WebkitOverflowScrolling'],
+          scrollbarWidth: 'none' as React.CSSProperties['scrollbarWidth'],
+          borderTop: isMobile ? `1px solid ${border}` : 'none',
+          flexShrink: 0,
+        }}>
           {(['radial', 'chord', 'grid'] as const).map(v => {
             const label = v === 'radial' ? 'Timeline' : v === 'chord' ? 'Champions' : 'All Winners';
             return (
-              <button key={v} className={`tab ${view === v ? 'active' : ''}`} onClick={() => setView(v)}>{label}</button>
+              <button key={v} className={`tab ${view === v ? 'active' : ''}`} onClick={() => setView(v)}
+                style={isMobile ? { fontSize: '8px', padding: '10px 14px', letterSpacing: '1.5px' } : undefined}
+              >{label}</button>
             );
           })}
-          <div style={{ width: '1px', height: '20px', background: border, margin: '0 6px' }} />
-          <Link href="/all-winners-classic" className="tab" style={tabLinkStyle}>
+          <div style={{ width: '1px', height: '20px', background: border, margin: '0 4px', flexShrink: 0 }} />
+          <Link href="/all-winners-classic" className="tab" style={{ ...tabLinkStyle, ...(isMobile ? { fontSize: '8px', padding: '10px 14px', letterSpacing: '1.5px' } : {}) }}>
             Classic Winners
           </Link>
+          {!isMobile && (
+            <div style={{ fontSize: '8.5px', fontFamily: 'Montserrat,sans-serif', color: '#3E5E42', letterSpacing: '2px', flexShrink: 0, paddingLeft: '14px', whiteSpace: 'nowrap' }}>
+              1860 – 2026
+            </div>
+          )}
         </nav>
-
-        <div style={{ fontSize: '8.5px', fontFamily: 'Montserrat,sans-serif', color: '#3E5E42', letterSpacing: '2px', flexShrink: 0 }}>
-          1860 – 2026
-        </div>
       </header>
 
       <main style={{ flex: 1, display: 'flex', overflow: 'hidden', position: 'relative' }}>
@@ -106,21 +128,25 @@ export function GolfMajorsApp() {
       </main>
 
       <footer className="no-print" style={{
-        borderTop: `1px solid ${border}`, padding: '9px 28px',
-        display: 'flex', alignItems: 'center', gap: '20px',
-        flexShrink: 0, background: hdr,
+        borderTop: `1px solid ${border}`,
+        padding: isMobile ? '6px 12px' : '9px 28px',
+        display: 'flex', alignItems: 'center',
+        gap: isMobile ? '10px' : '20px',
+        flexShrink: 0, background: hdr, flexWrap: 'wrap',
       }}>
         {MK.map(k => (
-          <div key={k} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: MM[k].bright }} />
-            <span style={{ fontSize: '8.5px', fontFamily: 'Montserrat,sans-serif', color: '#4A6A4E', letterSpacing: '0.8px' }}>
-              {MM[k].name}
+          <div key={k} style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: MM[k].bright, flexShrink: 0 }} />
+            <span style={{ fontSize: isMobile ? '7.5px' : '8.5px', fontFamily: 'Montserrat,sans-serif', color: '#4A6A4E', letterSpacing: '0.5px', whiteSpace: 'nowrap' }}>
+              {isMobile ? MM[k].short : MM[k].name}
             </span>
           </div>
         ))}
-        <div style={{ marginLeft: 'auto', fontSize: '8px', color: '#2A4A2E', fontFamily: 'Montserrat,sans-serif', letterSpacing: '1.5px' }}>
-          HOVER A DOT FOR DETAILS · CLICK TO SELECT PLAYER
-        </div>
+        {!isMobile && (
+          <div style={{ marginLeft: 'auto', fontSize: '8px', color: '#2A4A2E', fontFamily: 'Montserrat,sans-serif', letterSpacing: '1.5px' }}>
+            HOVER A DOT FOR DETAILS · CLICK TO SELECT PLAYER
+          </div>
+        )}
       </footer>
 
       {tweaksAvailable && tweaksOpen && (
