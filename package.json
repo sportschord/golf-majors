@@ -9,13 +9,18 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@sparticuz/chromium": "^143.0.4",
+    "@sportschord/print-pipeline": "file:vendor/sportschord-print-pipeline-0.1.1.tgz",
     "d3": "^7.9.0",
+    "googleapis": "^171.4.0",
     "next": "16.2.4",
+    "puppeteer-core": "^24.40.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "puppeteer": "^24.40.0",
     "@types/d3": "^7.4.3",
     "@types/node": "^20",
     "@types/react": "^19",
