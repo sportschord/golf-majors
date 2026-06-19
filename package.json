@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@sparticuz/chromium": "^143.0.4",
-    "@sportschord/print-pipeline": "github:sportschord/print-pipeline#v0.1.1",
+    "@sportschord/print-pipeline": "file:vendor/sportschord-print-pipeline-0.1.1.tgz",
     "d3": "^7.9.0",
     "googleapis": "^171.4.0",
     "next": "16.2.4",

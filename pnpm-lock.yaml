@@ -12,8 +12,8 @@ importers:
         specifier: ^143.0.4
         version: 143.0.4
       '@sportschord/print-pipeline':
-        specifier: github:sportschord/print-pipeline#v0.1.1
-        version: git+https://github.com/sportschord/print-pipeline.git#adf1047c52f12b21e6861352c90e354af67b4626(@sparticuz/chromium@143.0.4)(googleapis@171.4.0)(puppeteer-core@24.43.1)(puppeteer@24.43.1(typescript@5.9.3))
+        specifier: file:vendor/sportschord-print-pipeline-0.1.1.tgz
+        version: file:vendor/sportschord-print-pipeline-0.1.1.tgz(@sparticuz/chromium@143.0.4)(googleapis@171.4.0)(puppeteer-core@24.43.1)(puppeteer@24.43.1(typescript@5.9.3))
       d3:
         specifier: ^7.9.0
         version: 7.9.0
@@ -470,8 +470,8 @@ packages:
     resolution: {integrity: sha512-/6I7uQTRhRDD2/gGPQ1Gkf+Dqk0RYDACPJDZfSzz0OWk4JmUTonNHPXbrn6UIklOHlnDLf8xAAzkOZKB/cJpLA==}
     engines: {node: '>=20.11.0'}
 
-  '@sportschord/print-pipeline@git+https://github.com/sportschord/print-pipeline.git#adf1047c52f12b21e6861352c90e354af67b4626':
-    resolution: {commit: adf1047c52f12b21e6861352c90e354af67b4626, repo: https://github.com/sportschord/print-pipeline.git, type: git}
+  '@sportschord/print-pipeline@file:vendor/sportschord-print-pipeline-0.1.1.tgz':
+    resolution: {integrity: sha512-8Fb80yyJ0t05SAngOrybtoWoCFgZa6DlIep84Y+A1WBYiCdZY4G6gVXpTBF8w53Q6I1oTDufV0QXglqdmaSC/Q==, tarball: file:vendor/sportschord-print-pipeline-0.1.1.tgz}
     version: 0.1.1
     peerDependencies:
       '@sparticuz/chromium': '>=143'
@@ -3126,7 +3126,7 @@ snapshots:
       - debug
       - react-native-b4a
 
-  '@sportschord/print-pipeline@git+https://github.com/sportschord/print-pipeline.git#adf1047c52f12b21e6861352c90e354af67b4626(@sparticuz/chromium@143.0.4)(googleapis@171.4.0)(puppeteer-core@24.43.1)(puppeteer@24.43.1(typescript@5.9.3))':
+  '@sportschord/print-pipeline@file:vendor/sportschord-print-pipeline-0.1.1.tgz(@sparticuz/chromium@143.0.4)(googleapis@171.4.0)(puppeteer-core@24.43.1)(puppeteer@24.43.1(typescript@5.9.3))':
     dependencies:
       '@sparticuz/chromium': 143.0.4
       googleapis: 171.4.0
